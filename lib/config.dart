@@ -1,0 +1,1 @@
+const appBarHeight = 40.0;
