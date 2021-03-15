@@ -1,3 +1,4 @@
+import 'package:firebase_auth_flutter_app/bloc/deep_link/deep_link_bloc.dart';
 import 'package:firebase_auth_flutter_app/theme/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
@@ -41,25 +42,46 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(create: (context) => AuthenticationCheckBloc()),
           BlocProvider(create: (context) => AuthenticationBloc()),
+          BlocProvider(create: (context) => DeepLinkBloc()),
         ],
         child: Builder(
           builder: (context) {
-            return BlocBuilder<AuthenticationCheckBloc,
-                AuthenticationCheckState>(
+            return BlocBuilder<DeepLinkBloc, DeepLinkState>(
               builder: (context, state) {
-                BlocProvider.of<AuthenticationCheckBloc>(context)
-                    .add(CheckAuthStatus());
-                if (state is AuthenticationCheckInitial) {
+                BlocProvider.of<DeepLinkBloc>(context)
+                    .add(CheckDeepLinkStatus());
+                if (state is DeepLinkInitial) {
                   return Container(
                       color: accentWhite,
                       child: Center(child: CircularProgressIndicator()));
                 }
-                return MaterialApp(
-                  initialRoute:
-                      (state is Registered) ? Screens.home : Screens.welcome,
-                  routes: appRoutes,
+                if (state is OpenInDeepLinkState) {
+                  return MaterialApp(
+                    home: Scaffold(
+                      body: Center(
+                        child: Text('Open in Deep link'),
+                      ),
+                    ),
+                  );
+                }
+                return BlocBuilder<AuthenticationCheckBloc,
+                    AuthenticationCheckState>(
+                  builder: (context, state) {
+                    BlocProvider.of<AuthenticationCheckBloc>(context)
+                        .add(CheckAuthStatus());
+                    if (state is AuthenticationCheckInitial) {
+                      return Container(
+                          color: accentWhite,
+                          child: Center(child: CircularProgressIndicator()));
+                    }
+                    return MaterialApp(
+                      initialRoute:
+                          (state is Registered) ? Screens.home : Screens.welcome,
+                      routes: appRoutes,
+                    );
+                  },
                 );
-              },
+              }
             );
           },
         ));
