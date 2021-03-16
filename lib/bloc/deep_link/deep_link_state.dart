@@ -11,7 +11,7 @@ class DeepLinkInitial extends DeepLinkState {}
 class OpenInMainLinkState extends DeepLinkState{}
 
 class OpenInDeepLinkState extends DeepLinkState{
-  String _deepLinkString;
+  final String _deepLinkString;
   OpenInDeepLinkState(this._deepLinkString);
 
   @override

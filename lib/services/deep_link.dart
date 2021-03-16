@@ -8,7 +8,6 @@ class DynamicLinkService {
     FirebaseDynamicLinks.instance.onLink(
         onSuccess: (PendingDynamicLinkData dynamicLink) async {
           final Uri deepLink = dynamicLink?.link;
-
           if (deepLink != null) {
             return deepLink.path;
           }
@@ -19,12 +18,13 @@ class DynamicLinkService {
         }
     );
 
-    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
+    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance
+        .getInitialLink();
     final Uri deepLink = data?.link;
 
     if (deepLink != null) {
       return deepLink.path;
     }
+    //return null;
   }
-
 }

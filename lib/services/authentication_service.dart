@@ -64,9 +64,20 @@ class AuthenticationService extends IAuthenticationService {
   @override
   Future<bool> restorePassword(CredentialsModel credentials) async {
     try {
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: credentials.eMail);
+      String email = credentials.eMail;
+      var actionCodeSetting = ActionCodeSettings(
+          url: 'https://auth-flutter-test-app.firebaseapp.com?email=${email}',
+      dynamicLinkDomain: 'firebaseauthflutterapp.page.link',
+      androidInstallApp: true,
+      androidMinimumVersion: '21',
+      androidPackageName: 'com.example.firebase_auth_flutter_app',
+      handleCodeInApp: true,
+      iOSBundleId: 'com.example.firebaseAuthFlutterApp');
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email, actionCodeSettings: actionCodeSetting);
       return Future(() => true);
+      // await FirebaseAuth.instance
+      //     .sendPasswordResetEmail(email: credentials.eMail);
+      // return Future(() => true);
     } on FirebaseAuthException catch (e) {
       print(e.code);
       rethrow;
