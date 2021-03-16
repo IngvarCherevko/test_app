@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_flutter_app/models/credentials_model.dart';
 import 'package:firebase_auth_flutter_app/models/user_model.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 abstract class IAuthenticationService {
   Future<UserModel> signIn(CredentialsModel credentials);
@@ -11,18 +12,14 @@ abstract class IAuthenticationService {
 }
 
 class AuthenticationService extends IAuthenticationService {
-  // UserModel _userModel;
+   UserModel _userModel;
 
   @override
   Future<UserModel> signIn(CredentialsModel credentials) async {
     assert(credentials.eMail != null && credentials.password != null);
-    // TODO: implement signIn
-    // if (credentials.eMail == 'test@gmail.com' &&
-    //     credentials.password == 'password') {
-    //   return Future(() => UserModel());
-    // }
+
     try {
-      UserModel userModel = await FirebaseAuth.instance
+      _userModel = await FirebaseAuth.instance
           .signInWithEmailAndPassword(
               email: credentials.eMail, password: credentials.password)
           .then(
@@ -31,28 +28,26 @@ class AuthenticationService extends IAuthenticationService {
                 email: value.user.email,
                 name: value.user.displayName),
           );
-      return userModel;
+      return _userModel;
     } on FirebaseAuthException catch (e) {
       rethrow;
     } catch (error) {
       throw Exception("Error");
     }
-    // TODO: add push errorDialog here
-    return null;
   }
 
   @override
   Future<UserModel> signUp(CredentialsModel credentials) async {
     assert(credentials.eMail != null && credentials.password != null);
     try {
-      UserModel userModel = await FirebaseAuth.instance
+      _userModel = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(
               email: credentials.eMail, password: credentials.password)
           .then((value) => UserModel(
             id: value.user.uid,
             email: value.user.email,
             name: value.user.displayName));
-      return userModel;
+      return _userModel;
     } on FirebaseAuthException catch (e) {
       rethrow;
     } catch (error) {
@@ -64,8 +59,15 @@ class AuthenticationService extends IAuthenticationService {
   @override
   Future<bool> restorePassword(CredentialsModel credentials) async {
     try {
-      await FirebaseAuth.instance
-          .sendPasswordResetEmail(email: credentials.eMail);
+      var actionCodeSetting = ActionCodeSettings(
+          url: 'https://auth-flutter-test-app.firebaseapp.com?email=${credentials.eMail}',
+      dynamicLinkDomain: 'firebaseauthflutterapp.page.link',
+      androidInstallApp: true,
+      androidMinimumVersion: '21',
+      androidPackageName: 'com.example.firebase_auth_flutter_app',
+      handleCodeInApp: true,
+      iOSBundleId: 'com.example.firebaseAuthFlutterApp');
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: credentials.eMail, actionCodeSettings: actionCodeSetting);
       return Future(() => true);
     } on FirebaseAuthException catch (e) {
       print(e.code);

@@ -14,5 +14,5 @@ final Map<String, Widget Function(dynamic)> appRoutes = {
   Screens.login: (ctx) => LoginScreen(),
   Screens.registration: (cts) => RegisterScreen(),
   Screens.forgotPassword: (ctx) => ForgotPasswordScreen(),
-  Screens.resetScreen: (ctx) => SuccessScreen(),
+ // Screens.resetScreen: (ctx) => SuccessScreen(),
 };
