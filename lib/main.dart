@@ -33,37 +33,38 @@ class MyApp extends StatelessWidget {
           return BlocBuilder<DeepLinkBloc, DeepLinkState>(
             builder: (context, state) {
               BlocProvider.of<DeepLinkBloc>(context).add(CheckDeepLinkStatus());
-              if (state is DeepLinkInitial) {
-                return Container(
-                    color: accentWhite,
-                    child: Center(child: CircularProgressIndicator()));
-              }
               if (state is OpenInDeepLinkState) {
                 return MaterialApp(
                   home: Scaffold(
                     body: Center(
-                      child: Text('Open with deepLink'),
+                      child: Text('Open in deep link'),
                     ),
                   ),
                 );
               }
-              return BlocBuilder<AuthenticationCheckBloc,
-                  AuthenticationCheckState>(
-                builder: (context, state) {
-                  BlocProvider.of<AuthenticationCheckBloc>(context)
-                      .add(CheckAuthStatus());
-                  if (state is AuthenticationCheckInitial) {
-                    return Container(
-                        color: accentWhite,
-                        child: Center(child: CircularProgressIndicator()));
-                  }
-                  return MaterialApp(
-                    initialRoute:
-                        (state is Registered) ? Screens.home : Screens.welcome,
-                    routes: appRoutes,
-                  );
-                },
-              );
+              if (state is OpenInMainLinkState) {
+                return BlocBuilder<AuthenticationCheckBloc,
+                    AuthenticationCheckState>(
+                  builder: (context, state) {
+                    BlocProvider.of<AuthenticationCheckBloc>(context)
+                        .add(CheckAuthStatus());
+                    if (state is AuthenticationCheckInitial) {
+                      return Container(
+                          color: accentWhite,
+                          child: Center(child: CircularProgressIndicator()));
+                    }
+                    return MaterialApp(
+                      initialRoute: (state is Registered)
+                          ? Screens.home
+                          : Screens.welcome,
+                      routes: appRoutes,
+                    );
+                  },
+                );
+              }
+              return Container(
+                  color: accentWhite,
+                  child: Center(child: CircularProgressIndicator()));
             },
           );
         },

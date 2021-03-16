@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_flutter_app/models/credentials_model.dart';
 import 'package:firebase_auth_flutter_app/models/user_model.dart';
+import 'package:firebase_auth_flutter_app/services/deep_link.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 abstract class IAuthenticationService {
@@ -62,12 +63,15 @@ class AuthenticationService extends IAuthenticationService {
       var actionCodeSetting = ActionCodeSettings(
           url: 'https://auth-flutter-test-app.firebaseapp.com?email=${credentials.eMail}',
       dynamicLinkDomain: 'firebaseauthflutterapp.page.link',
-      androidInstallApp: true,
+      androidInstallApp: false,
       androidMinimumVersion: '21',
       androidPackageName: 'com.example.firebase_auth_flutter_app',
       handleCodeInApp: true,
       iOSBundleId: 'com.example.firebaseAuthFlutterApp');
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: credentials.eMail, actionCodeSettings: actionCodeSetting);
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+          email: credentials.eMail,
+          actionCodeSettings: actionCodeSetting,
+      );
       return Future(() => true);
     } on FirebaseAuthException catch (e) {
       print(e.code);
