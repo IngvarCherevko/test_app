@@ -13,7 +13,7 @@ import 'package:firebase_auth_flutter_app/utils/screen_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget with AppActions{
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -31,6 +31,7 @@ class _LoginScreenState extends State<LoginScreen> with AppActions {
         if (state is ForgotPassword)
           navigateTo(context, Screens.forgotPassword);
         if (state is SignedIn) navigateToReplacementAll(context, Screens.home);
+        if (state is FirebaseAuthExceptionState) showSnackBar(context, state.props[0].toString());
       },
       child: Scaffold(
         body: SafeArea(

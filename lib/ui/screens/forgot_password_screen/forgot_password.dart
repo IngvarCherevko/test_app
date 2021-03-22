@@ -35,6 +35,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
       listener: (context, state) {
         if (state is PasswordResetConfirmed)
           navigateToReplacement(context, Screens.successScreen);
+        if (state is FirebaseAuthExceptionState) showSnackBar(context, state.props[0].toString());
       },
       child: Scaffold(
           appBar: SignInHeader(),

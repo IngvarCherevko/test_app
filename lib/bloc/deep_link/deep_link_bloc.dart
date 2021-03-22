@@ -19,7 +19,10 @@ class DeepLinkBloc extends Bloc<DeepLinkEvent, DeepLinkState> {
     if (event is CheckDeepLinkStatus) {
       String _path = await _service.initDynamicLinks();
       if (_path != null) {
-        yield OpenInDeepLinkState(_path);
+        if (_path != '' ) {
+          yield OpenInDeepLinkState(_path);
+        }
+          yield OpenInDeepLinkState(_path);
       } else {
         yield OpenInMainLinkState();
       }

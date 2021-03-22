@@ -17,3 +17,4 @@ class OpenInDeepLinkState extends DeepLinkState{
   @override
   List<Object> get props => [_deepLinkString];
 }
+

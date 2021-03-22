@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_flutter_app/models/credentials_model.dart';
 import 'package:firebase_auth_flutter_app/models/user_model.dart';
 import 'package:firebase_auth_flutter_app/services/authentication_service.dart';
+import 'package:firebase_auth_flutter_app/ui/actions/app_actions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'authentication_event.dart';
@@ -27,19 +28,33 @@ class AuthenticationBloc
           yield SignedIn(_user);
         } else
           yield ForgotPassword();
+      }on FirebaseAuthException catch (e) {
+        yield FirebaseAuthExceptionState(e.message);
       } catch (e) {
-        print(e);
+        yield FirebaseAuthExceptionState(e.message);
       }
     }
     if (event is SignUp) {
-      _user = await service.signUp(event.credentials);
-      if (_user != null) {
-        yield SignedIn(_user);
+      try {
+        _user = await service.signUp(event.credentials);
+        if (_user != null) {
+          yield SignedIn(_user);
+        }
+      }on FirebaseAuthException catch (e) {
+        yield FirebaseAuthExceptionState(e.message);
+      } catch (e) {
+        yield FirebaseAuthExceptionState(e.message);
       }
     }
     if (event is RestorePassword) {
-      if (await service.restorePassword(event.credentials)) {
-        yield PasswordResetConfirmed();
+      try {
+        if (await service.restorePassword(event.credentials)) {
+          yield PasswordResetConfirmed();
+        }
+      }on FirebaseAuthException catch (e) {
+        yield FirebaseAuthExceptionState(e.message);
+      } catch (e) {
+        yield FirebaseAuthExceptionState(e.message);
       }
     }
   }

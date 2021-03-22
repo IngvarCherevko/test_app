@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth_flutter_app/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:firebase_auth_flutter_app/models/credentials_model.dart';
 import 'package:firebase_auth_flutter_app/models/user_model.dart';
 import 'package:firebase_auth_flutter_app/services/deep_link.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/cupertino.dart';
 
 abstract class IAuthenticationService {
   Future<UserModel> signIn(CredentialsModel credentials);
@@ -31,7 +33,7 @@ class AuthenticationService extends IAuthenticationService {
           );
       return _userModel;
     } on FirebaseAuthException catch (e) {
-      rethrow;
+      throw Exception(e.message);
     } catch (error) {
       throw Exception("Error");
     }
@@ -50,7 +52,7 @@ class AuthenticationService extends IAuthenticationService {
             name: value.user.displayName));
       return _userModel;
     } on FirebaseAuthException catch (e) {
-      rethrow;
+      throw Exception(e.message);
     } catch (error) {
       throw Exception("Error");
     }
@@ -74,8 +76,7 @@ class AuthenticationService extends IAuthenticationService {
       );
       return Future(() => true);
     } on FirebaseAuthException catch (e) {
-      print(e.code);
-      rethrow;
+      throw Exception(e.message);
     } catch (e) {
       throw Exception("Error");
     }

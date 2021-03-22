@@ -34,6 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> with AppActions {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state is SignedIn) navigateToReplacementAll(context, Screens.home);
+        if (state is FirebaseAuthExceptionState) showSnackBar(context, state.props[0].toString());
       },
       child: Scaffold(
         appBar: SignInHeader(),

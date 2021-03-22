@@ -19,4 +19,11 @@ class SignedIn extends AuthenticationState{
   @override
   List<Object> get props => [user];
 }
+class FirebaseAuthExceptionState extends AuthenticationState{
+  FirebaseAuthExceptionState(this.exception);
+  final String exception;
+
+  @override
+  List<Object> get props => [exception];
+}
 

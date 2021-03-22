@@ -33,3 +33,11 @@ class RestorePassword extends AuthenticationEvent {
   @override
   List<Object> get props => [credentials];
 }
+class FirebaseAuthExceptionEvent extends AuthenticationEvent {
+  final String exeption;
+
+  FirebaseAuthExceptionEvent(this.exeption);
+
+  @override
+  List<Object> get props => [exeption];
+}
